@@ -70,7 +70,7 @@ public class UI {
         mainImgPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         mainImgLabel = new JLabel();
         mainImgLabel.setBackground(Color.BLACK);
-        mainImgLabel.setBounds(2,2,790,390);
+        mainImgLabel.setBounds(0,0,400,600);
         mainImgPanel.add(mainImgLabel);
         window.add(mainImgPanel);
 
@@ -222,4 +222,10 @@ public class UI {
         soldierLabel.setBounds(0,0,300,20);
         playerPanel.add(soldierLabel);
     }
+
+    public void setImage(String image){
+        ImageIcon imgIcon = new ImageIcon(getClass().getClassLoader().getResource(image));
+        mainImgLabel.setIcon(imgIcon);
+    }
+
 }

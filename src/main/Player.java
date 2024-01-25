@@ -4,6 +4,7 @@ import assets.weapons.SuperWeapon;
 
 public class Player {
 
+    public String img;
     public int day;
     public int gold;
     public int food;

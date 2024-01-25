@@ -64,6 +64,8 @@ public class Story {
 
         player.currentWeapon = new Knife();
 
+        player.img = "title.png";
+
     }
     public void selectPosition(String nextPosition){
 
@@ -190,9 +192,9 @@ public class Story {
     }
 
     public void prologue1(){
-        int[] battleRes = battle.calcBattle(5, 2, 5, 1);
+        ui.mainTextArea.setText("Prologue 1");
 
-        ui.mainTextArea.setText("1" + battleRes[0] + " " + battleRes[1]);
+        ui.setImage(Img.title);
 
         ui.choice1.setText(">");
         ui.choice2.setText("");
@@ -339,6 +341,7 @@ public class Story {
     }
     public void warroom(){
         ui.mainTextArea.setText("You are in your Warroom.\nFrom here you can command your army.");
+        ui.setImage(Img.warroom);
 
         castleDefault();
 
