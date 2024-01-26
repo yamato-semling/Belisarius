@@ -37,12 +37,14 @@ public class Story {
         player.food = 30;
         player.wood = 50;
         player.ppl = 15;
+        player.recruitment = false;
         player.soldier = 5;
         player.tier = 2;
         player.moral = 60;
         player.power = 10;
 
         player.goldProduction = player.tax * player.ppl;
+        player.pplProduction =
         player.foodProduction = player.ppl * 3;
         player.woodProduction = player.ppl;
         player.soldierProduction = 0;
@@ -143,6 +145,15 @@ public class Story {
             case "decrease10":
                 decrease(10);
                 break;
+            case "recruit":
+                recruit();
+                break;
+            case "startrecruit":
+                startRecruit();
+                break;
+            case "stoprecruit":
+                stopRecruit();
+                break;
             default:
                 break;
         }
@@ -157,10 +168,18 @@ public class Story {
     }
 
     public void sunday(){
+
+        int recruits = 0;
+
+        if (player.recruitment){
+            recruits = player.ppl / 4;
+        }
+        player.soldierProduction = recruits;
+
         int goldDif = player.goldProduction - player.goldConsumption;
         int foodDif = player.foodProduction - player.foodConsumption;
         int woodDif = player.woodProduction - player.woodConsumption;
-        int pplDif = player.pplProduction - player.pplConsumption;
+        int pplDif = player.pplProduction - (player.pplConsumption + recruits);
 
         player.gold = player.gold + goldDif;
         player.food = player.food + foodDif;
@@ -326,6 +345,7 @@ public class Story {
         game.nextPosition4 = "";
     }public void office(){
         ui.mainTextArea.setText("You are in your Office.\nFrom here you can make new laws.");
+        ui.setImage(Img.title);
 
         castleDefault();
 
@@ -357,6 +377,7 @@ public class Story {
     }
     public void barracks(){
         ui.mainTextArea.setText("You are in the Brracks.\nFrom here you can train your soldiers or adjust their budget.");
+        ui.setImage(Img.title);
 
         castleDefault();
 
@@ -365,10 +386,66 @@ public class Story {
         ui.choice3.setText("Moral Boost");
         ui.choice4.setText("Adjust Budget");
 
-        game.nextPosition1 = "train";
-        game.nextPosition2 = "recruit";
+        game.nextPosition1 = "recruit";
+        game.nextPosition2 = "train";
         game.nextPosition3 = "moral";
         game.nextPosition4 = "bbudget";
+    }
+    public void recruit(){
+        ui.mainTextArea.setText("You are in the Barracks.\nYou are discussing on the recruitment policy with your Chief Commander.\nThe Recruitment is influenced by the moral and the number of your subjects, it will cost gold too.\nRecruits per week: " + player.soldierProduction+ "\nRecruitment Status: " + player.recruitment);
+
+        ui.choice1.setText("Start Recruitment");
+        ui.choice2.setText("Stop Recruitment");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "startrecruit";
+        game.nextPosition2 = "stoprecruit";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "barracks";
+    }
+    public void startRecruit(){
+
+        if (!player.recruitment){
+            player.recruitment = true;
+            int recruits = player.ppl / 4;
+
+            ui.mainTextArea.setText("You started recruiting soldiers.\nYou have " + player.ppl + " subjects.\nYou will recruit " + recruits + " recruits per week.");
+        }else {
+            ui.mainTextArea.setText("You are already recruiting soldiers.");
+        }
+
+        ui.choice1.setText("Start Recruitment");
+        ui.choice2.setText("Stop Recruitment");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "startrecruit";
+        game.nextPosition2 = "train";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "barracks";
+
+    }
+    public void stopRecruit(){
+
+        if (player.recruitment){
+            player.recruitment = false;
+
+            ui.mainTextArea.setText("You aren't recruiting anymore.");
+        }else {
+            ui.mainTextArea.setText("You aren't recruiting right now..");
+        }
+
+        ui.choice1.setText("Start Recruitment");
+        ui.choice2.setText("Stop Recruitment");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "startrecruit";
+        game.nextPosition2 = "stoprecruit";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "barracks";
+
     }
     public void base(){
         ui.mainTextArea.setText("You are with your servants.\nYou can command them to adjust the infrastructure.");

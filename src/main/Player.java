@@ -10,6 +10,7 @@ public class Player {
     public int food;
     public int wood;
     public int ppl;
+    public boolean recruitment;
     public int soldier;
     public int tier;
     public int moral;
