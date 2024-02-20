@@ -8,7 +8,7 @@ public class UI {
     JFrame window;
     JPanel titleNamePanel, startButtonPanel, mainTextPanel, mainImgPanel, castleButtonPanel, choiceButtonPanel, playerPanel;
     JLabel titleNameLabel, mainImgLabel;
-    JLabel dayLabel, goldLabel, taxLabel, foodLabel, woodLabel, pplLabel, soldierLabel, powerLabel;
+    JLabel dayLabel, goldLabel, taxLabel, foodLabel, woodLabel, pplLabel, soldierLabel, moralLabel, powerLabel;
     JButton startButton;
     public JButton choice1;
     public JButton choice2;
@@ -221,6 +221,16 @@ public class UI {
         soldierLabel.setForeground(Color.WHITE);
         soldierLabel.setBounds(0,0,300,20);
         playerPanel.add(soldierLabel);
+        moralLabel = new JLabel();
+        moralLabel.setFont(textFont);
+        moralLabel.setForeground(Color.WHITE);
+        moralLabel.setBounds(0,0,300,20);
+        playerPanel.add(moralLabel);
+        powerLabel = new JLabel();
+        powerLabel.setFont(textFont);
+        powerLabel.setForeground(Color.WHITE);
+        powerLabel.setBounds(0,0,300,20);
+        playerPanel.add(powerLabel);
     }
 
     public void setImage(String image){

@@ -1,11 +1,17 @@
 package main;
 
 import assets.enemy.SuperEnemy;
+import assets.enemy.Town;
 import assets.enemy.Village;
+import assets.laws.CityHall;
+import assets.laws.Laws;
+import assets.laws.ProfessionalArmy;
+import assets.laws.SuperLaw;
 import assets.weapons.Knife;
 import assets.weapons.LongSword;
 import story.Warroom;
 
+import javax.sql.rowset.spi.TransactionalWriter;
 import javax.swing.*;
 
 public class Story {
@@ -15,12 +21,23 @@ public class Story {
     ViewManager vm;
     Player player = new Player();
     SuperEnemy village = new Village();
+    SuperEnemy town = new Town();
+    SuperLaw cityHall = new CityHall();
+    SuperLaw professionalArmy = new ProfessionalArmy();
     Battle battle;
 
+    private String ename;
     private int esoldier;
     private int etier;
     private int eloot;
     private int eppl;
+
+    private int lawCountMax;
+    private int lawCount;
+
+    private SuperLaw[] laws = {
+            cityHall, professionalArmy
+    };
 
     public Story(Game g, UI userInterface, ViewManager vManager){
 
@@ -63,10 +80,15 @@ public class Story {
         ui.woodLabel.setText("Wood: "+player.wood);
         ui.pplLabel.setText("People: "+player.ppl);
         ui.soldierLabel.setText("Soldiers: "+player.soldier);
+        ui.moralLabel.setText("Moral: "+player.moral);
+        ui.powerLabel.setText("Power: "+player.power);
 
         player.currentWeapon = new Knife();
 
         player.img = "title.png";
+
+        lawCountMax = laws.length - 1;
+        lawCount = 0;
 
     }
     public void selectPosition(String nextPosition){
@@ -94,12 +116,6 @@ public class Story {
             case "base":
                 base();
                 break;
-            case "test":
-                test();
-                break;
-            case "test1":
-                test1();
-                break;
             case "day":
                 day();
                 break;
@@ -111,6 +127,12 @@ public class Story {
                 break;
             case "vbattle":
                 battle(village);
+                break;
+            case "town":
+                Warroom.town();
+                break;
+            case "tbattle":
+                battle(town);
                 break;
             case "attack":
                 attack();
@@ -154,6 +176,28 @@ public class Story {
             case "stoprecruit":
                 stopRecruit();
                 break;
+            case "law":
+                law();
+                break;
+            case "avaiblelaw":
+                avaibleLaw();
+                break;
+            case "nextavaiblelaw":
+                if (lawCount == lawCountMax){
+                    lawCount = 0;
+                }else {
+                    lawCount = lawCount + 1;
+                }
+                avaibleLaw();
+                break;
+            case "lastavaiblelaw":
+                if (lawCount == 0){
+                    lawCount = lawCountMax;
+                }else {
+                    lawCount = lawCount - 1;
+                }
+                avaibleLaw();
+                break;
             default:
                 break;
         }
@@ -196,6 +240,8 @@ public class Story {
         ui.woodLabel.setText("Wood: "+player.wood);
         ui.pplLabel.setText("People: "+player.ppl);
         ui.soldierLabel.setText("Soldiers: "+player.soldier);
+        ui.moralLabel.setText("Moral: "+player.moral);
+        ui.powerLabel.setText("Power: "+player.power);
 
         ui.mainTextArea.setText("This week you made \n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + player.moralProduction + " moral,\n" + player.powerProduction + " power.");
 
@@ -208,6 +254,20 @@ public class Story {
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
+    }
+    public void day(){
+        player.day = player.day + 1;
+
+        ui.dayLabel.setText("Days:"+ player.day);
+        ui.mainTextArea.setText("You slept.");
+
+        if (player.day % 7 == 0){
+            sunday();
+        }
+    }
+    public void week(){
+        player.day = player.day + 7;
+        sunday();
     }
 
     public void prologue1(){
@@ -225,29 +285,28 @@ public class Story {
         game.nextPosition3 = "";
         game.nextPosition4 = "";
     }
+    public void prologue2(){
+        ui.mainTextArea.setText("Prologue 2");
 
-    public void day(){
-        player.day = player.day + 1;
+        ui.choice1.setText(">");
+        ui.choice2.setText("");
+        ui.choice3.setText("");
+        ui.choice4.setText("");
 
-        ui.dayLabel.setText("Days:"+ player.day);
-        ui.mainTextArea.setText("You slept.");
-
-        if (player.day % 7 == 0){
-            sunday();
-        }
-    }
-    public void week(){
-        player.day = player.day + 7;
-        sunday();
+        game.nextPosition1 = "prologue3";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "";
     }
 
     public void battle(SuperEnemy enemy){
+        ename = enemy.name;
         esoldier = enemy.soldier;
         etier = enemy.tier;
         eloot = enemy.loot;
         eppl = enemy.ppl;
 
-        ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + village.name + " has " + esoldier + " tier " + village.tier + " soldiers.");
+        ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
 
         ui.castleButtonPanel.setVisible(false);
 
@@ -262,7 +321,7 @@ public class Story {
         game.nextPosition4 = "";
     }
     public void attack(){
-        ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + village.name + " has " + esoldier + " tier " + village.tier + " soldiers.");
+        ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
 
         ui.castleButtonPanel.setVisible(false);
 
@@ -298,7 +357,7 @@ public class Story {
         player.gold = player.gold + eloot;
         player.ppl = player.ppl + eppl;
 
-        ui.mainTextArea.setText("You defeated your enemy and subjugated " + eppl + " villagers,\nnow you have " + player.ppl + " subjects.\nThey paid you " + eloot + " gold. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + village.name + " has " + esoldier + " tier " + village.tier + " soldiers.");
+        ui.mainTextArea.setText("You defeated your enemy and subjugated " + eppl + " villagers,\nnow you have " + player.ppl + " subjects.\nThey paid you " + eloot + " gold. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
 
         ui.castleButtonPanel.setVisible(false);
 
@@ -314,9 +373,10 @@ public class Story {
 
         ui.goldLabel.setText("Gold: "+player.gold);
         ui.pplLabel.setText("People: "+player.ppl);
+        ui.soldierLabel.setText("Soldiers: "+player.soldier);
     }
     public void lose(){
-        ui.mainTextArea.setText("You lost against your enemy. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + village.name + " has " + esoldier + " tier " + village.tier + " soldiers.");
+        ui.mainTextArea.setText("You lost against your enemy. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
 
         ui.castleButtonPanel.setVisible(false);
 
@@ -329,21 +389,12 @@ public class Story {
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
+
+        ui.goldLabel.setText("Gold: "+player.gold);
+        ui.pplLabel.setText("People: "+player.ppl);
+        ui.soldierLabel.setText("Soldiers: "+player.soldier);
     }
-
-    public void prologue2(){
-        ui.mainTextArea.setText("2");
-
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "prologue3";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
-    }public void office(){
+    public void office(){
         ui.mainTextArea.setText("You are in your Office.\nFrom here you can make new laws.");
         ui.setImage(Img.title);
 
@@ -371,7 +422,7 @@ public class Story {
         ui.choice4.setText("");
 
         game.nextPosition1 = "village";
-        game.nextPosition2 = "";
+        game.nextPosition2 = "town";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
     }
@@ -457,40 +508,6 @@ public class Story {
         ui.choice3.setText("");
         ui.choice4.setText("");
 
-        game.nextPosition1 = "test";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
-    }
-    public void test(){
-        ui.mainTextArea.setText("You are in your Test.\nFrom here you can make new laws or command your army.");
-
-        castleDefault();
-
-        game.office = "office";
-
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "test1";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
-    }
-    public void test1(){
-        ui.mainTextArea.setText("You are in your Test1.\nFrom here you can make new laws or command your army.");
-
-        castleDefault();
-
-        game.office = "office";
-
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
         game.nextPosition1 = "office";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
@@ -499,16 +516,67 @@ public class Story {
     public void law(){
         ui.mainTextArea.setText("You are in your Office with your most intelligent vassals discussing on your lands laws.");
 
-        ui.choice1.setText("");
-        ui.choice2.setText("");
+        ui.choice1.setText("Active Laws");
+        ui.choice2.setText("Avaible Laws");
         ui.choice3.setText("");
-        ui.choice4.setText("");
+        ui.choice4.setText("Back");
 
-        game.nextPosition1 = "";
-        game.nextPosition2 = "";
+        game.nextPosition1 = "activelaw";
+        game.nextPosition2 = "avaiblelaw";
         game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.nextPosition4 = "office";
+    }public void activeLaw(){
+        ui.mainTextArea.setText("You are in your Office with your most intelligent vassals discussing on your lands laws.");
+
+        ui.choice1.setText("->");
+        ui.choice2.setText("<-");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "nextactivelaw";
+        game.nextPosition2 = "lastactivelaw";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "law";
+    }public void avaibleLaw(){
+        String lawName = laws[lawCount].name;
+        String lawDescription = laws[lawCount].description;
+        String lawReuiqrements = laws[lawCount].requirement;
+
+        ui.mainTextArea.setText("Law: " + lawName + "\nDescription: " + lawDescription + "\nRequirements: " + lawReuiqrements);
+
+        ui.choice1.setText("->");
+        ui.choice2.setText("<-");
+        ui.choice3.setText("Activate Law");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "nextavaiblelaw";
+        game.nextPosition2 = "lastavaiblelaw";
+        game.nextPosition3 = "activatelaw";
+        game.nextPosition4 = "office";
+    }public void activateLaw(int count){
+
+        if (laws[count].active == true){
+            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.moral > laws[count].moral && player.power > laws[count].power){
+
+                laws[count].active = true;
+
+            }
+        }
+    }public void activatedLaw(){
+        ui.mainTextArea.setText("You are in your Office with your most intelligent vassals discussing on your lands laws.");
+
+        ui.choice1.setText("->");
+        ui.choice2.setText("<-");
+        ui.choice3.setText("Deactivate Law");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "nextavaiblelaw";
+        game.nextPosition2 = "lastavaiblelaw";
+        game.nextPosition3 = "deactivatelaw";
+        game.nextPosition4 = "office";
     }
+
+
     public void tax(){
         int goldDif = player.goldProduction - player.goldConsumption;
         ui.mainTextArea.setText("The Tax in your land is set on " + player.tax + ",\nwith " + player.ppl  +" subjects in your lands you make " + player.goldProduction + ".\nAfter " + player.goldConsumption + " gold consumption, your true gold balance is at: " + goldDif);
@@ -537,7 +605,7 @@ public class Story {
         game.nextPosition4 = "office";
     }
     public void taxDecrease(){
-        ui.mainTextArea.setText("Tax " + player.tax + "\nDecreasing Tax helps gaining moral and power..");
+        ui.mainTextArea.setText("Tax " + player.tax + "\nDecreasing Tax helps gaining moral and power.");
 
         ui.choice1.setText("Decrease by 1");
         ui.choice2.setText("Decrease by 5");

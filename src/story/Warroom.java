@@ -31,6 +31,17 @@ public class Warroom {
         game.nextPosition4 = "warroom";
     }
     public static void town(){
+        ui.mainTextArea.setText("You gathered your army.\nYour army is camping near the town.");
+
+        ui.choice1.setText("Conquer Town");
+        ui.choice2.setText("");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "tbattle";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "warroom";
 
     }
 
