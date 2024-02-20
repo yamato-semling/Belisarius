@@ -45,5 +45,20 @@ public class Warroom {
 
     }
 
+    public static void castle(){
+        ui.mainTextArea.setText("You gathered your army.\nYour army is camping near the castle.");
+
+        ui.choice1.setText("Conquer Castle");
+        ui.choice2.setText("");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "cbattle";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "warroom";
+
+    }
+
 
 }

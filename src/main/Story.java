@@ -4,15 +4,10 @@ import assets.enemy.SuperEnemy;
 import assets.enemy.Town;
 import assets.enemy.Village;
 import assets.laws.CityHall;
-import assets.laws.Laws;
 import assets.laws.ProfessionalArmy;
 import assets.laws.SuperLaw;
 import assets.weapons.Knife;
-import assets.weapons.LongSword;
 import story.Warroom;
-
-import javax.sql.rowset.spi.TransactionalWriter;
-import javax.swing.*;
 
 public class Story {
 
@@ -22,6 +17,7 @@ public class Story {
     Player player = new Player();
     SuperEnemy village = new Village();
     SuperEnemy town = new Town();
+    SuperEnemy castle = new Town();
     SuperLaw cityHall = new CityHall();
     SuperLaw professionalArmy = new ProfessionalArmy();
     Battle battle;
@@ -69,7 +65,7 @@ public class Story {
         player.powerProduction = 0;
 
         player.pplConsumption = player.soldierProduction;
-        player.goldConsumption = player.soldier * 1;
+        player.goldConsumption = player.soldier;
         player.foodConsumption = player.soldier * 3;
         player.woodConsumption = player.soldier * 2;
 
@@ -133,6 +129,12 @@ public class Story {
                 break;
             case "tbattle":
                 battle(town);
+                break;
+            case "castle":
+                Warroom.castle();
+                break;
+            case "cbattle":
+                battle(castle);
                 break;
             case "attack":
                 attack();
@@ -335,23 +337,40 @@ public class Story {
         game.nextPosition3 = "";
         game.nextPosition4 = "";
 
-        System.out.println(player.soldier + " " + player.tier + " " + esoldier + " " + etier);
-        int[] battleRes =  battle.calcBattle(player.soldier, player.tier, esoldier, etier);
+        int[] battleRes =  battle.neoCalcBattle(player.soldier, player.tier, esoldier, etier);
 
-        player.soldier = battleRes[1];
-        esoldier = battleRes[2];
+        player.soldier = battleRes[0];
+        esoldier = battleRes[1];
+        int cres = battleRes[2];
 
-        switch (battleRes[0]){
-            case 2:
-                win();
-                break;
-            case 0:
-                lose();
-                break;
-            default:
-                attack();
-                break;
+        if (cres == 2){
+            ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.\nYou hit them with a critical!");
+        }else if (cres == 0){
+            ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.\nThey hit you with a critical!");
+        }else {
+            ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
         }
+
+        if (esoldier <= 0){
+            win();
+        }else if (player.soldier <= 0){
+            lose();
+        }else {
+            nextBattle();
+        }
+    }
+    public void nextBattle(){
+        ui.castleButtonPanel.setVisible(false);
+
+        ui.choice1.setText("Attack");
+        ui.choice2.setText("Retreat");
+        ui.choice3.setText("");
+        ui.choice4.setText("");
+
+        game.nextPosition1 = "attack";
+        game.nextPosition2 = "retreat";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "";
     }
     public void win(){
         player.gold = player.gold + eloot;
@@ -423,7 +442,7 @@ public class Story {
 
         game.nextPosition1 = "village";
         game.nextPosition2 = "town";
-        game.nextPosition3 = "";
+        game.nextPosition3 = "castle";
         game.nextPosition4 = "";
     }
     public void barracks(){

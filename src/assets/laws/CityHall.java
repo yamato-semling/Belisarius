@@ -8,7 +8,7 @@ public class CityHall extends SuperLaw{
         active = false;
         name = "City Hall";
         description = "Cool Description";
-        requirement = "More thant one subject.";
+        requirement = "More than one subject.";
         gold = 0;
         ppl = 1;
         soldier = 0;

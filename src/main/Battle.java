@@ -3,6 +3,8 @@ package main;
 import java.lang.reflect.Array;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static main.Dice.dice;
+
 public class Battle {
 
     public static int calcDmg(int soldier, int tier){
@@ -46,24 +48,42 @@ public class Battle {
 
     }
 
-    public static int[] neoCalcBattle(int psoldier, int ptier, int esoldier, int etier) {
-
-        int pdmg = calcDmg(psoldier, ptier);
-        int edmg = calcDmg(esoldier, etier);
-
-        int dice = ThreadLocalRandom.current().nextInt(1, 20 + 1);
-        dice = dice + ptier;
-
-        if (dice > 18){
-
-        }else if (dice < 6){
-
-        }else{
-
-        }
-        
-
-        return null;
+    public static int neoCalcDmg(int soldier, int tier){
+        return (soldier * tier) / 8;
     }
 
+    public static int[] neoCalcBattle(int psoldier, int ptier, int esoldier, int etier) {
+
+        int pdmg = neoCalcDmg(psoldier, ptier);
+        int edmg = neoCalcDmg(esoldier, etier);
+
+        int pres = 0;
+        int eres = 0;
+        int cres = 1;
+
+        int dice = dice(20) + ptier;
+
+        // crit
+        if (dice > 15 + etier){
+            pres = psoldier - edmg;
+            eres = esoldier - (pdmg + (pdmg / 2));
+            cres = 2;
+        // crit negative
+        }else if (dice < 5 + etier) {
+            pres = psoldier - (edmg + (edmg / 2));
+            eres = esoldier - pdmg;
+            cres = 0;
+        // normal
+        }else{
+            pres = psoldier - edmg;
+            eres = esoldier - pdmg;
+            cres = 1;
+        }
+
+        int[] res = new int[3];
+        res[0] = pres;
+        res[1] = eres;
+        res[2] = cres;
+        return res;
+    }
 }
