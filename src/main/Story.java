@@ -1,12 +1,12 @@
 package main;
 
+import assets.enemy.Castle;
 import assets.enemy.SuperEnemy;
 import assets.enemy.Town;
 import assets.enemy.Village;
 import assets.laws.CityHall;
 import assets.laws.ProfessionalArmy;
 import assets.laws.SuperLaw;
-import assets.weapons.Knife;
 import story.Warroom;
 
 public class Story {
@@ -15,9 +15,6 @@ public class Story {
     UI ui;
     ViewManager vm;
     Player player = new Player();
-    SuperEnemy village = new Village();
-    SuperEnemy town = new Town();
-    SuperEnemy castle = new Town();
     SuperLaw cityHall = new CityHall();
     SuperLaw professionalArmy = new ProfessionalArmy();
     Battle battle;
@@ -79,8 +76,6 @@ public class Story {
         ui.moralLabel.setText("Moral: "+player.moral);
         ui.powerLabel.setText("Power: "+player.power);
 
-        player.currentWeapon = new Knife();
-
         player.img = "title.png";
 
         lawCountMax = laws.length - 1;
@@ -122,19 +117,19 @@ public class Story {
                 Warroom.village();
                 break;
             case "vbattle":
-                battle(village);
+                battle(new Village());
                 break;
             case "town":
                 Warroom.town();
                 break;
             case "tbattle":
-                battle(town);
+                battle(new Town());
                 break;
             case "castle":
                 Warroom.castle();
                 break;
             case "cbattle":
-                battle(castle);
+                battle(new Castle());
                 break;
             case "attack":
                 attack();
@@ -181,16 +176,13 @@ public class Story {
             case "law":
                 law();
                 break;
-            case "avaiblelaw":
-                avaibleLaw();
-                break;
             case "nextavaiblelaw":
                 if (lawCount == lawCountMax){
                     lawCount = 0;
                 }else {
                     lawCount = lawCount + 1;
                 }
-                avaibleLaw();
+                law();
                 break;
             case "lastavaiblelaw":
                 if (lawCount == 0){
@@ -198,11 +190,26 @@ public class Story {
                 }else {
                     lawCount = lawCount - 1;
                 }
-                avaibleLaw();
+                law();
+                break;
+            case "switchlaw":
+                switchLaw(lawCount);
                 break;
             default:
                 break;
         }
+    }
+
+    public void updateStats(){
+        ui.dayLabel.setText("Days: "+player.day);
+        ui.goldLabel.setText("Gold: "+player.gold);
+        ui.taxLabel.setText("Tax: "+player.tax);
+        ui.foodLabel.setText("Food: "+player.food);
+        ui.woodLabel.setText("Wood: "+player.wood);
+        ui.pplLabel.setText("People: "+player.ppl);
+        ui.soldierLabel.setText("Soldiers: "+player.soldier);
+        ui.moralLabel.setText("Moral: "+player.moral);
+        ui.powerLabel.setText("Power: "+player.power);
     }
 
     public void castleDefault(){
@@ -222,7 +229,10 @@ public class Story {
         }
         player.soldierProduction = recruits;
 
-        int goldDif = player.goldProduction - player.goldConsumption;
+        int profArmy = 0;
+        if(professionalArmy.active){profArmy = player.soldier / 100 * 20;}
+
+        int goldDif = player.goldProduction - (player.goldConsumption + profArmy);
         int foodDif = player.foodProduction - player.foodConsumption;
         int woodDif = player.woodProduction - player.woodConsumption;
         int pplDif = player.pplProduction - (player.pplConsumption + recruits);
@@ -235,15 +245,9 @@ public class Story {
         player.moral = player.moral + player.moralProduction;
         player.power = player.power + player.powerProduction;
 
-        ui.dayLabel.setText("Days: "+player.day);
-        ui.goldLabel.setText("Gold: "+player.gold);
-        ui.taxLabel.setText("Tax: "+player.tax);
-        ui.foodLabel.setText("Food: "+player.food);
-        ui.woodLabel.setText("Wood: "+player.wood);
-        ui.pplLabel.setText("People: "+player.ppl);
-        ui.soldierLabel.setText("Soldiers: "+player.soldier);
-        ui.moralLabel.setText("Moral: "+player.moral);
-        ui.powerLabel.setText("Power: "+player.power);
+        if(cityHall.active){player.gold = player.gold + (player.goldProduction / 10);}
+
+        updateStats();
 
         ui.mainTextArea.setText("This week you made \n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + player.moralProduction + " moral,\n" + player.powerProduction + " power.");
 
@@ -374,6 +378,8 @@ public class Story {
     }
     public void win(){
         player.gold = player.gold + eloot;
+        player.moral = player.moral + eloot / 5;
+        player.power = player.power + eloot / 2;
         player.ppl = player.ppl + eppl;
 
         ui.mainTextArea.setText("You defeated your enemy and subjugated " + eppl + " villagers,\nnow you have " + player.ppl + " subjects.\nThey paid you " + eloot + " gold. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
@@ -390,9 +396,7 @@ public class Story {
         game.nextPosition3 = "";
         game.nextPosition4 = "";
 
-        ui.goldLabel.setText("Gold: "+player.gold);
-        ui.pplLabel.setText("People: "+player.ppl);
-        ui.soldierLabel.setText("Soldiers: "+player.soldier);
+        updateStats();
     }
     public void lose(){
         ui.mainTextArea.setText("You lost against your enemy. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
@@ -532,36 +536,12 @@ public class Story {
         game.nextPosition3 = "";
         game.nextPosition4 = "";
     }
-    public void law(){
-        ui.mainTextArea.setText("You are in your Office with your most intelligent vassals discussing on your lands laws.");
+    public void defaultLawText(SuperLaw localLaw){
+        ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + localLaw.active + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement);
+    }public void law(){
+        SuperLaw localLaw = laws[lawCount];
 
-        ui.choice1.setText("Active Laws");
-        ui.choice2.setText("Avaible Laws");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "activelaw";
-        game.nextPosition2 = "avaiblelaw";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "office";
-    }public void activeLaw(){
-        ui.mainTextArea.setText("You are in your Office with your most intelligent vassals discussing on your lands laws.");
-
-        ui.choice1.setText("->");
-        ui.choice2.setText("<-");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "nextactivelaw";
-        game.nextPosition2 = "lastactivelaw";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "law";
-    }public void avaibleLaw(){
-        String lawName = laws[lawCount].name;
-        String lawDescription = laws[lawCount].description;
-        String lawReuiqrements = laws[lawCount].requirement;
-
-        ui.mainTextArea.setText("Law: " + lawName + "\nDescription: " + lawDescription + "\nRequirements: " + lawReuiqrements);
+        defaultLawText(localLaw);
 
         ui.choice1.setText("->");
         ui.choice2.setText("<-");
@@ -570,31 +550,25 @@ public class Story {
 
         game.nextPosition1 = "nextavaiblelaw";
         game.nextPosition2 = "lastavaiblelaw";
-        game.nextPosition3 = "activatelaw";
+        game.nextPosition3 = "switchlaw";
         game.nextPosition4 = "office";
-    }public void activateLaw(int count){
+    }public void switchLaw(int count) {
 
-        if (laws[count].active == true){
-            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.moral > laws[count].moral && player.power > laws[count].power){
+        SuperLaw localLaw = laws[lawCount];
 
-                laws[count].active = true;
+        if (!localLaw.active) {
+            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.moral > laws[count].moral && player.power > laws[count].power) {
 
+                localLaw.active = true;
+                defaultLawText(localLaw);
+            }else {
+                ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + localLaw.active + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement + "\n\nRequirements not met!");
             }
+        }else {
+            localLaw.active = false;
+            defaultLawText(localLaw);
         }
-    }public void activatedLaw(){
-        ui.mainTextArea.setText("You are in your Office with your most intelligent vassals discussing on your lands laws.");
-
-        ui.choice1.setText("->");
-        ui.choice2.setText("<-");
-        ui.choice3.setText("Deactivate Law");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "nextavaiblelaw";
-        game.nextPosition2 = "lastavaiblelaw";
-        game.nextPosition3 = "deactivatelaw";
-        game.nextPosition4 = "office";
     }
-
 
     public void tax(){
         int goldDif = player.goldProduction - player.goldConsumption;

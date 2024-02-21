@@ -7,7 +7,7 @@ public class Village extends SuperEnemy {
     public Village(){
 
         name = "Village";
-        soldier = ThreadLocalRandom.current().nextInt(3, 7 + 1);
+        soldier = ThreadLocalRandom.current().nextInt(3, 15 + 1);
         tier = 1;
         loot = soldier * tier;
         ppl = soldier * 4;

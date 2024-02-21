@@ -49,7 +49,7 @@ public class Battle {
     }
 
     public static int neoCalcDmg(int soldier, int tier){
-        return (soldier * tier) / 8;
+        return (soldier * tier) / 8 ;
     }
 
     public static int[] neoCalcBattle(int psoldier, int ptier, int esoldier, int etier) {
@@ -65,19 +65,18 @@ public class Battle {
 
         // crit
         if (dice > 15 + etier){
-            pres = psoldier - edmg;
+            pres = psoldier - edmg / 2;
             eres = esoldier - (pdmg + (pdmg / 2));
             cres = 2;
         // crit negative
         }else if (dice < 5 + etier) {
             pres = psoldier - (edmg + (edmg / 2));
-            eres = esoldier - pdmg;
+            eres = esoldier - pdmg / 2;
             cres = 0;
         // normal
         }else{
             pres = psoldier - edmg;
             eres = esoldier - pdmg;
-            cres = 1;
         }
 
         int[] res = new int[3];

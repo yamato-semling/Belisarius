@@ -1,6 +1,5 @@
 package main;
 
-import assets.weapons.SuperWeapon;
 
 public class Player {
 
@@ -29,6 +28,5 @@ public class Player {
     public int foodConsumption;
     public int woodConsumption;
     public int pplConsumption;
-    public SuperWeapon currentWeapon;
 
 }
