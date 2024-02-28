@@ -8,7 +8,7 @@ public class UI {
     JFrame window;
     JPanel titleNamePanel, startButtonPanel, mainTextPanel, mainImgPanel, castleButtonPanel, choiceButtonPanel, playerPanel;
     JLabel titleNameLabel, mainImgLabel;
-    JLabel dayLabel, goldLabel, taxLabel, foodLabel, woodLabel, pplLabel, soldierLabel, moralLabel, powerLabel;
+    JLabel dayLabel, goldLabel, taxLabel, foodLabel, woodLabel, pplLabel, soldierLabel, tierLabel, loyaltyLabel, powerLabel;
     JButton startButton;
     public JButton choice1;
     public JButton choice2;
@@ -65,7 +65,8 @@ public class UI {
 
         //GAME SCREEN
         mainImgPanel = new JPanel();
-        mainImgPanel.setBounds(480,50,400,600);
+        // mainImgPanel.setBounds(480,50,400,600);
+        mainImgPanel.setBounds(50,50,400,600);
         mainImgPanel.setBackground(Color.BLACK);
         mainImgPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         mainImgLabel = new JLabel();
@@ -75,7 +76,8 @@ public class UI {
         window.add(mainImgPanel);
 
         mainTextPanel = new JPanel();
-        mainTextPanel.setBounds(50,50,410,400);
+        // mainTextPanel.setBounds(50,50,410,400);
+        mainTextPanel.setBounds(470,50,410,400);
         mainTextPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         mainTextPanel.setBackground(Color.BLACK);
         window.add(mainTextPanel);
@@ -92,7 +94,8 @@ public class UI {
         mainTextPanel.add(mainTextArea);
 
         castleButtonPanel = new JPanel();
-        castleButtonPanel.setBounds(50,500,410,150);
+        // castleButtonPanel.setBounds(50,500,410,150);
+        castleButtonPanel.setBounds(900,500,300,150);
         castleButtonPanel.setBackground(Color.BLACK);
         castleButtonPanel.setLayout(new GridLayout(4,1));
         castleButtonPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
@@ -136,7 +139,8 @@ public class UI {
         castleButtonPanel.add(castle4);
 
         choiceButtonPanel = new JPanel();
-        choiceButtonPanel.setBounds(900,500,300,150);
+        // choiceButtonPanel.setBounds(900,500,300,150);
+        choiceButtonPanel.setBounds(470,500,410,150);
         choiceButtonPanel.setBackground(Color.BLACK);
         choiceButtonPanel.setLayout(new GridLayout(4,1));
         choiceButtonPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
@@ -221,11 +225,16 @@ public class UI {
         soldierLabel.setForeground(Color.WHITE);
         soldierLabel.setBounds(0,0,300,20);
         playerPanel.add(soldierLabel);
-        moralLabel = new JLabel();
-        moralLabel.setFont(textFont);
-        moralLabel.setForeground(Color.WHITE);
-        moralLabel.setBounds(0,0,300,20);
-        playerPanel.add(moralLabel);
+        tierLabel = new JLabel();
+        tierLabel.setFont(textFont);
+        tierLabel.setForeground(Color.WHITE);
+        tierLabel.setBounds(0,0,300,20);
+        playerPanel.add(tierLabel);
+        loyaltyLabel = new JLabel();
+        loyaltyLabel.setFont(textFont);
+        loyaltyLabel.setForeground(Color.WHITE);
+        loyaltyLabel.setBounds(0,0,300,20);
+        playerPanel.add(loyaltyLabel);
         powerLabel = new JLabel();
         powerLabel.setFont(textFont);
         powerLabel.setForeground(Color.WHITE);

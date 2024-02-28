@@ -39,6 +39,19 @@ public class Story {
         vm = vManager;
     }
 
+    public void updateStats(){
+        ui.dayLabel.setText("Days: "+player.day);
+        ui.goldLabel.setText("Gold: "+player.gold);
+        ui.taxLabel.setText("Tax: "+player.tax);
+        ui.foodLabel.setText("Food: "+player.food);
+        ui.woodLabel.setText("Wood: "+player.wood);
+        ui.pplLabel.setText("People: "+player.ppl);
+        ui.soldierLabel.setText("Soldiers: "+player.soldier);
+        ui.tierLabel.setText("Tier: "+player.tier);
+        ui.loyaltyLabel.setText("Loyalty: "+player.loyalty);
+        ui.powerLabel.setText("Power: "+player.power);
+    }
+
     public void defaultSetup(){
 
         player.day = 0;
@@ -50,7 +63,7 @@ public class Story {
         player.recruitment = false;
         player.soldier = 5;
         player.tier = 2;
-        player.moral = 60;
+        player.loyalty = 60;
         player.power = 10;
 
         player.goldProduction = player.tax * player.ppl;
@@ -58,7 +71,7 @@ public class Story {
         player.foodProduction = player.ppl * 3;
         player.woodProduction = player.ppl;
         player.soldierProduction = 0;
-        player.moralProduction = 1;
+        player.loyaltyProduction = 1;
         player.powerProduction = 0;
 
         player.pplConsumption = player.soldierProduction;
@@ -66,15 +79,7 @@ public class Story {
         player.foodConsumption = player.soldier * 3;
         player.woodConsumption = player.soldier * 2;
 
-        ui.dayLabel.setText("Days: "+player.day);
-        ui.goldLabel.setText("Gold: "+player.gold);
-        ui.taxLabel.setText("Tax: "+player.tax);
-        ui.foodLabel.setText("Food: "+player.food);
-        ui.woodLabel.setText("Wood: "+player.wood);
-        ui.pplLabel.setText("People: "+player.ppl);
-        ui.soldierLabel.setText("Soldiers: "+player.soldier);
-        ui.moralLabel.setText("Moral: "+player.moral);
-        ui.powerLabel.setText("Power: "+player.power);
+        updateStats();
 
         player.img = "title.png";
 
@@ -83,7 +88,6 @@ public class Story {
 
     }
     public void selectPosition(String nextPosition){
-
         switch (nextPosition){
             case "prologue1":
                 prologue1();
@@ -95,6 +99,12 @@ public class Story {
                 vm.gameStart();
                 office();
                 break;
+            case "sundaycheckout":
+                sundayCheckout();
+                break;
+            case "gameover":
+                gameOver();
+                break;
             case "office":
                 office();
                 break;
@@ -104,8 +114,8 @@ public class Story {
             case "barracks":
                 barracks();
                 break;
-            case "base":
-                base();
+            case "basement":
+                basement();
                 break;
             case "day":
                 day();
@@ -200,28 +210,15 @@ public class Story {
         }
     }
 
-    public void updateStats(){
-        ui.dayLabel.setText("Days: "+player.day);
-        ui.goldLabel.setText("Gold: "+player.gold);
-        ui.taxLabel.setText("Tax: "+player.tax);
-        ui.foodLabel.setText("Food: "+player.food);
-        ui.woodLabel.setText("Wood: "+player.wood);
-        ui.pplLabel.setText("People: "+player.ppl);
-        ui.soldierLabel.setText("Soldiers: "+player.soldier);
-        ui.moralLabel.setText("Moral: "+player.moral);
-        ui.powerLabel.setText("Power: "+player.power);
-    }
-
     public void castleDefault(){
         ui.castleButtonPanel.setVisible(true);
         ui.castle1.setText("Office");
         ui.castle2.setText("Warroom");
         ui.castle3.setText("Barracks");
-        ui.castle4.setText("Base");
+        ui.castle4.setText("Basement");
     }
 
     public void sunday(){
-
         int recruits = 0;
 
         if (player.recruitment){
@@ -236,30 +233,38 @@ public class Story {
         int foodDif = player.foodProduction - player.foodConsumption;
         int woodDif = player.woodProduction - player.woodConsumption;
         int pplDif = player.pplProduction - (player.pplConsumption + recruits);
+        int loyaltyDif = player.loyalty + (player.tax * -1);
 
         player.gold = player.gold + goldDif;
         player.food = player.food + foodDif;
         player.wood = player.wood + woodDif;
         player.ppl = player.ppl + pplDif;
         player.soldier = player.soldier + player.soldierProduction;
-        player.moral = player.moral + player.moralProduction;
+        player.loyalty = player.loyalty + loyaltyDif;
         player.power = player.power + player.powerProduction;
 
         if(cityHall.active){player.gold = player.gold + (player.goldProduction / 10);}
 
         updateStats();
 
-        ui.mainTextArea.setText("This week you made \n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + player.moralProduction + " moral,\n" + player.powerProduction + " power.");
+        ui.mainTextArea.setText("Administrative Officer:\nMy Lord, this week you made:\n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + loyaltyDif + " loyalty,\n" + player.powerProduction + " power.");
 
         ui.choice1.setText(">");
         ui.choice2.setText("");
         ui.choice3.setText("");
         ui.choice4.setText("");
 
-        game.nextPosition1 = "office";
+        game.nextPosition1 = "sundaycheckout";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
+    }
+    public void sundayCheckout(){
+        if (player.loyalty <= 0){
+            gameOverRes("Messenger:\nMy Lord, your subjects aren't loyal to you anymore and started an uprising against your oppressive tyranny!\n\nYOU WERE OVERTHROWN!");
+        }else{
+            office();
+        }
     }
     public void day(){
         player.day = player.day + 1;
@@ -274,6 +279,27 @@ public class Story {
     public void week(){
         player.day = player.day + 7;
         sunday();
+    }
+
+    public void gameOver(){
+        defaultSetup();
+        vm.showTitleScreen();
+        ui.titleNameLabel.setText("Game Over");
+        ui.startButton.setText("New Game");
+    }public void gameOverRes(String res){
+        ui.castleButtonPanel.setVisible(false);
+
+        ui.mainTextArea.setText(res);
+
+        ui.choice1.setText(">");
+        ui.choice2.setText("");
+        ui.choice3.setText("");
+        ui.choice4.setText("");
+
+        game.nextPosition1 = "gameover";
+        game.nextPosition2 = "";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "";
     }
 
     public void prologue1(){
@@ -378,7 +404,7 @@ public class Story {
     }
     public void win(){
         player.gold = player.gold + eloot;
-        player.moral = player.moral + eloot / 5;
+        player.loyalty = player.loyalty + eloot / 5;
         player.power = player.power + eloot / 2;
         player.ppl = player.ppl + eppl;
 
@@ -413,9 +439,7 @@ public class Story {
         game.nextPosition3 = "";
         game.nextPosition4 = "";
 
-        ui.goldLabel.setText("Gold: "+player.gold);
-        ui.pplLabel.setText("People: "+player.ppl);
-        ui.soldierLabel.setText("Soldiers: "+player.soldier);
+        updateStats();
     }
     public void office(){
         ui.mainTextArea.setText("You are in your Office.\nFrom here you can make new laws.");
@@ -426,7 +450,7 @@ public class Story {
         ui.choice1.setText("Wait a day");
         ui.choice2.setText("Wait a week");
         ui.choice3.setText("Adjust Tax");
-        ui.choice4.setText("Law");
+        ui.choice4.setText("Laws");
 
         game.nextPosition1 = "day";
         game.nextPosition2 = "week";
@@ -457,16 +481,16 @@ public class Story {
 
         ui.choice1.setText("Recruit Soldiers");
         ui.choice2.setText("Train Soldiers");
-        ui.choice3.setText("Moral Boost");
+        ui.choice3.setText("Loyalty Boost");
         ui.choice4.setText("Adjust Budget");
 
         game.nextPosition1 = "recruit";
         game.nextPosition2 = "train";
-        game.nextPosition3 = "moral";
+        game.nextPosition3 = "loyalty";
         game.nextPosition4 = "bbudget";
     }
     public void recruit(){
-        ui.mainTextArea.setText("You are in the Barracks.\nYou are discussing on the recruitment policy with your Chief Commander.\nThe Recruitment is influenced by the moral and the number of your subjects, it will cost gold too.\nRecruits per week: " + player.soldierProduction+ "\nRecruitment Status: " + player.recruitment);
+        ui.mainTextArea.setText("You are in the Barracks.\nYou are discussing on the recruitment policy with your Chief Commander.\nThe Recruitment is influenced by the loyalty and the number of your subjects, it will cost gold too.\nRecruits per week: " + player.soldierProduction+ "\nRecruitment Status: " + player.recruitment);
 
         ui.choice1.setText("Start Recruitment");
         ui.choice2.setText("Stop Recruitment");
@@ -521,20 +545,33 @@ public class Story {
         game.nextPosition4 = "barracks";
 
     }
-    public void base(){
-        ui.mainTextArea.setText("You are with your servants.\nYou can command them to adjust the infrastructure.");
+    public void basement(){
+        ui.mainTextArea.setText("You are alone in the basement of your castle.");
 
         castleDefault();
 
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
+        ui.choice1.setText("Prison");
+        ui.choice2.setText("Hidden Room");
         ui.choice3.setText("");
         ui.choice4.setText("");
 
-        game.nextPosition1 = "office";
+        game.nextPosition1 = "";
         game.nextPosition2 = "";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
+    }
+    public void hiddenRoom(){
+        ui.mainTextArea.setText("You are in your hidden room.\nHere you can do hidden rituals...");
+
+        ui.choice1.setText("Blood Magic");
+        ui.choice2.setText("Blood Rituals");
+        ui.choice3.setText("Blood Summoning");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "bmagic";
+        game.nextPosition2 = "brituals";
+        game.nextPosition3 = "bsummoning";
+        game.nextPosition4 = "basement";
     }
     public void defaultLawText(SuperLaw localLaw){
         ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + localLaw.active + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement);
@@ -557,7 +594,7 @@ public class Story {
         SuperLaw localLaw = laws[lawCount];
 
         if (!localLaw.active) {
-            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.moral > laws[count].moral && player.power > laws[count].power) {
+            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.loyalty > laws[count].loyalty && player.power > laws[count].power) {
 
                 localLaw.active = true;
                 defaultLawText(localLaw);
@@ -585,7 +622,7 @@ public class Story {
         game.nextPosition4 = "office";
     }
     public void taxRaise(){
-        ui.mainTextArea.setText("Tax " + player.tax + "\nRaising Tax can gain you gold but with high tax you lose moral and power.");
+        ui.mainTextArea.setText("Tax " + player.tax + "\nRaising Tax can gain you gold but with high tax you lose loyalty and power.");
 
         ui.choice1.setText("Raise by 1");
         ui.choice2.setText("Raise by 5");
@@ -598,7 +635,7 @@ public class Story {
         game.nextPosition4 = "office";
     }
     public void taxDecrease(){
-        ui.mainTextArea.setText("Tax " + player.tax + "\nDecreasing Tax helps gaining moral and power.");
+        ui.mainTextArea.setText("Tax " + player.tax + "\nDecreasing Tax helps gaining loyalty and power.");
 
         ui.choice1.setText("Decrease by 1");
         ui.choice2.setText("Decrease by 5");
@@ -616,26 +653,24 @@ public class Story {
             case 1:
                 player.tax = player.tax + 1;
                 if (player.tax >= 5){
-                    player.moralProduction = player.moralProduction - 1;
+                    player.loyaltyProduction = player.loyaltyProduction - 1;
                 }
-                ui.mainTextArea.setText("Tax: " + player.tax + " Raising Tax can gain you gold but with high tax you lose moral and power.\nRaised tax by 1.");
-                ui.taxLabel.setText("Tax: "+player.tax);
+                ui.mainTextArea.setText("Tax: " + player.tax + " Raising Tax can gain you gold but with high tax you lose loyalty and power.\nRaised tax by 1.");
                 break;
             case 5:
                 player.tax = player.tax + 5;
-                player.moralProduction = player.moralProduction - 3;
-                ui.mainTextArea.setText("Tax: " + player.tax + " Raising Tax can gain you gold but with high tax you lose moral and power.\nRaised tax by 5.");
-                ui.taxLabel.setText("Tax: "+player.tax);
+                player.loyaltyProduction = player.loyaltyProduction - 3;
+                ui.mainTextArea.setText("Tax: " + player.tax + " Raising Tax can gain you gold but with high tax you lose loyalty and power.\nRaised tax by 5.");
                 break;
             case 10:
                 player.tax = player.tax + 10;
-                player.moralProduction = player.moralProduction - 5;
-                ui.mainTextArea.setText("Tax: " + player.tax + " Raising Tax can gain you gold but with high tax you lose moral and power.\nRaised tax by 10.");
-                ui.taxLabel.setText("Tax: "+player.tax);
+                player.loyaltyProduction = player.loyaltyProduction - 5;
+                ui.mainTextArea.setText("Tax: " + player.tax + " Raising Tax can gain you gold but with high tax you lose loyalty and power.\nRaised tax by 10.");
                 break;
             default:
                 break;
         }
+        updateStats();
         player.goldProduction = player.ppl + player.tax;
 
     }
@@ -646,26 +681,24 @@ public class Story {
             case 1:
                 player.tax = player.tax - 1;
                 if (player.tax >= 5){
-                    player.moralProduction = player.moralProduction + 1;
+                    player.loyaltyProduction = player.loyaltyProduction + 1;
                 }
-                ui.mainTextArea.setText("Tax: " + player.tax + " Decreasing Tax helps gaining moral and power.\nDecreased tax by 1.");
-                ui.taxLabel.setText("Tax: "+player.tax);
+                ui.mainTextArea.setText("Tax: " + player.tax + " Decreasing Tax helps gaining loyalty and power.\nDecreased tax by 1.");
                 break;
             case 5:
                 player.tax = player.tax - 5;
-                player.moralProduction = player.moralProduction + 3;
-                ui.mainTextArea.setText("Tax: " + player.tax + " Decreasing Tax helps gaining moral and power.\nDecreased tax by 5.");
-                ui.taxLabel.setText("Tax: "+player.tax);
+                player.loyaltyProduction = player.loyaltyProduction + 3;
+                ui.mainTextArea.setText("Tax: " + player.tax + " Decreasing Tax helps gaining loyalty and power.\nDecreased tax by 5.");
                 break;
             case 10:
                 player.tax = player.tax - 10;
-                player.moralProduction = player.moralProduction + 5;
-                ui.mainTextArea.setText("Tax: " + player.tax + " Decreasing Tax helps gaining moral and power.\nDecreased tax by 10.");
-                ui.taxLabel.setText("Tax: "+player.tax);
+                player.loyaltyProduction = player.loyaltyProduction + 5;
+                ui.mainTextArea.setText("Tax: " + player.tax + " Decreasing Tax helps gaining loyalty and power.\nDecreased tax by 10.");
                 break;
             default:
                 break;
         }
+        updateStats();
         player.goldProduction = player.ppl + player.tax;
 
     }

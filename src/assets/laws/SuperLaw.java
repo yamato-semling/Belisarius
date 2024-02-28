@@ -11,7 +11,7 @@ public class SuperLaw {
     public int ppl;
     public int soldier;
     public int tier;
-    public int moral;
+    public int loyalty;
     public int power;
 
     public String getName()

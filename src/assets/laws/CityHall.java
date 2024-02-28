@@ -13,7 +13,7 @@ public class CityHall extends SuperLaw{
         ppl = 25;
         soldier = 0;
         tier = 0;
-        moral = 0;
+        loyalty = 0;
         power = 0;
 
     }

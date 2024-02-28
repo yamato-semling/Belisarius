@@ -65,7 +65,7 @@ public class Game {
                 case "ca1": story.office(); break;
                 case "ca2": story.warroom(); break;
                 case "ca3": story.barracks(); break;
-                case "ca4": story.base(); break;
+                case "ca4": story.basement(); break;
             }
         }
     }

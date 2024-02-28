@@ -12,7 +12,7 @@ public class Player {
     public boolean recruitment;
     public int soldier;
     public int tier;
-    public int moral;
+    public int loyalty;
     public int power;
     public int tax;
 
@@ -21,7 +21,7 @@ public class Player {
     public int woodProduction;
     public int pplProduction;
     public int soldierProduction;
-    public int moralProduction;
+    public int loyaltyProduction;
     public int powerProduction;
 
     public int goldConsumption;

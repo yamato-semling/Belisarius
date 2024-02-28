@@ -10,11 +10,11 @@ public class PrimaeNoctis extends SuperLaw{
         description = "Jus Primae Noctis.";
         requirement = "More than 40 Power.";
         gold = 0;
-        ppl = 25;
+        ppl = 0;
         soldier = 0;
         tier = 0;
-        moral = 0;
-        power = 0;
+        loyalty = 0;
+        power = 40;
 
     }
 }
