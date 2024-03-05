@@ -4,11 +4,10 @@ public class ProfessionalArmy extends SuperLaw{
 
     public ProfessionalArmy(){
 
-        id = 2;
-        active = false;
+        id = 1;
         name = "Professional Army";
-        description = "Your Army gains one more tier.";
-        requirement = "Will cost 10% of your Army-Budget every week.";
+        description = "Greater chance of hitting a critical Blow at Enemies.";
+        requirement = "You need a loyalty greater than 150. It will cost 10% of your Army-Budget every week.";
         gold = 0;
         ppl = 0;
         soldier = 0;

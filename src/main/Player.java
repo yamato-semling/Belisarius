@@ -1,7 +1,12 @@
 package main;
 
 
-public class Player {
+import assets.laws.CityHall;
+import assets.laws.SuperLaw;
+
+import java.io.Serializable;
+
+public class Player implements Serializable {
 
     public String img;
     public int day;
@@ -29,4 +34,5 @@ public class Player {
     public int woodConsumption;
     public int pplConsumption;
 
+    public boolean[] law = {false, false, false};
 }

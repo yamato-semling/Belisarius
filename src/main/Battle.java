@@ -1,9 +1,13 @@
 package main;
 
+import assets.laws.ProfessionalArmy;
+import story.Warroom;
+
 import java.lang.reflect.Array;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static main.Dice.dice;
+import static main.Story.player;
 
 public class Battle {
 
@@ -61,7 +65,10 @@ public class Battle {
         int eres = 0;
         int cres = 1;
 
-        int dice = dice(20) + ptier;
+        int buff = 0;
+        if (player.law[1]){buff = 2;}
+
+        int dice = dice(20) + ptier + buff;
 
         // crit
         if (dice > 15 + etier){

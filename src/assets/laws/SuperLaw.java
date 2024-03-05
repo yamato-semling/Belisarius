@@ -3,7 +3,6 @@ package assets.laws;
 public class SuperLaw {
 
     public int id;
-    public boolean active;
     public String name;
     public String description;
     public String requirement;

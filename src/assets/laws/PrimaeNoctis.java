@@ -4,8 +4,7 @@ public class PrimaeNoctis extends SuperLaw{
 
     public PrimaeNoctis(){
 
-        id = 3;
-        active = false;
+        id = 2;
         name = "Primae Noctis";
         description = "Jus Primae Noctis.";
         requirement = "More than 40 Power.";

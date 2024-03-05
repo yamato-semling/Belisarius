@@ -14,7 +14,7 @@ public class Story {
     Game game;
     UI ui;
     ViewManager vm;
-    Player player = new Player();
+    static Player player = new Player();
     SuperLaw cityHall = new CityHall();
     SuperLaw professionalArmy = new ProfessionalArmy();
     Battle battle;
@@ -66,26 +66,12 @@ public class Story {
         player.loyalty = 60;
         player.power = 10;
 
-        player.goldProduction = player.tax * player.ppl;
-        player.pplProduction =
-        player.foodProduction = player.ppl * 3;
-        player.woodProduction = player.ppl;
-        player.soldierProduction = 0;
-        player.loyaltyProduction = 1;
-        player.powerProduction = 0;
-
-        player.pplConsumption = player.soldierProduction;
-        player.goldConsumption = player.soldier;
-        player.foodConsumption = player.soldier * 3;
-        player.woodConsumption = player.soldier * 2;
-
         updateStats();
 
         player.img = "title.png";
 
         lawCountMax = laws.length - 1;
         lawCount = 0;
-
     }
     public void selectPosition(String nextPosition){
         switch (nextPosition){
@@ -96,6 +82,63 @@ public class Story {
                 prologue2();
                 break;
             case "prologue3":
+                vm.gameStart();
+                office();
+                break;
+            case "file":
+                file();
+                break;
+            case "save":
+                save();
+                break;
+            case "save1":
+                Game.saveGame(1);
+                ui.mainTextArea.setText("Successfully saved to Game1.");
+                break;
+            case "save2":
+                Game.saveGame(2);
+                ui.mainTextArea.setText("Successfully saved to Game2.");
+                break;
+            case "save3":
+                Game.saveGame(3);
+                ui.mainTextArea.setText("Successfully saved to Game3.");
+                break;
+            case "load":
+                load();
+                break;
+            case "load1":
+                Game.loadGame(1);
+                updateStats();
+                ui.mainTextArea.setText("Successfully loaded Game1.");
+                break;
+            case "load2":
+                Game.loadGame(2);
+                updateStats();
+                ui.mainTextArea.setText("Successfully loaded Game2.");
+                break;
+            case "load3":
+                Game.loadGame(3);
+                updateStats();
+                ui.mainTextArea.setText("Successfully loaded Game3.");
+                break;
+            case "load1f":
+                Game.loadGame(1);
+                updateStats();
+                ui.mainTextArea.setText("Successfully loaded Game1.");
+                vm.gameStart();
+                office();
+                break;
+            case "load2f":
+                Game.loadGame(2);
+                updateStats();
+                ui.mainTextArea.setText("Successfully loaded Game2.");
+                vm.gameStart();
+                office();
+                break;
+            case "load3f":
+                Game.loadGame(3);
+                updateStats();
+                ui.mainTextArea.setText("Successfully loaded Game3.");
                 vm.gameStart();
                 office();
                 break;
@@ -117,6 +160,8 @@ public class Story {
             case "basement":
                 basement();
                 break;
+            case "wait":
+                sleep();
             case "day":
                 day();
                 break;
@@ -205,9 +250,19 @@ public class Story {
             case "switchlaw":
                 switchLaw(lawCount);
                 break;
+            case "hiddenroom":
+                hiddenRoom();
+                break;
             default:
                 break;
         }
+    }
+
+    public int toWeek(int week){
+        return week * 7;
+    }
+    public int toMonth(int month){
+        return month * 7 * 4;
     }
 
     public void castleDefault(){
@@ -219,35 +274,50 @@ public class Story {
     }
 
     public void sunday(){
-        int recruits = 0;
 
-        if (player.recruitment){
-            recruits = player.ppl / 4;
-        }
-        player.soldierProduction = recruits;
+
 
         int profArmy = 0;
-        if(professionalArmy.active){profArmy = player.soldier / 100 * 20;}
+        if(player.law[professionalArmy.id]){profArmy = player.soldier / 100 * 20;}
+
+        player.goldProduction = player.tax * player.ppl;
+        player.pplProduction = player.ppl / 3;
+        player.foodProduction = player.ppl * 3;
+        player.woodProduction = player.ppl;
+
+        player.goldConsumption = player.soldier;
+        player.foodConsumption = player.soldier * 3;
+        player.woodConsumption = player.soldier * 2;
+        player.soldierProduction = 0;
+        if (player.recruitment){
+            player.soldierProduction = player.ppl / 4;
+        }
+        player.pplConsumption = player.soldierProduction;
 
         int goldDif = player.goldProduction - (player.goldConsumption + profArmy);
+        // System.out.println("Tax: "+ player.tax +" goldProduction: "+ player.goldProduction +" GoldConsumption: "+ player.goldConsumption +" GoldDif: "+ goldDif);
         int foodDif = player.foodProduction - player.foodConsumption;
         int woodDif = player.woodProduction - player.woodConsumption;
-        int pplDif = player.pplProduction - (player.pplConsumption + recruits);
-        int loyaltyDif = player.loyalty + (player.tax * -1);
+        int pplDif = player.pplProduction - player.pplConsumption;
+        player.loyaltyProduction = - (player.tax +(player.soldierProduction / 2));
+        // System.out.println("Tax: "+ player.tax +" Tax minus: "+ (player.tax * -1) +" Loyalty: "+ player.loyalty +" LoyaltyDif: "+ loyaltyDif);
+
+        player.ppl = player.ppl + pplDif;
 
         player.gold = player.gold + goldDif;
         player.food = player.food + foodDif;
         player.wood = player.wood + woodDif;
-        player.ppl = player.ppl + pplDif;
         player.soldier = player.soldier + player.soldierProduction;
-        player.loyalty = player.loyalty + loyaltyDif;
+        player.loyalty = player.loyalty + player.loyaltyProduction;
         player.power = player.power + player.powerProduction;
 
-        if(cityHall.active){player.gold = player.gold + (player.goldProduction / 10);}
+        // System.out.println(player.loyalty);
+
+        if(player.law[cityHall.id]){player.gold = player.gold + (player.goldProduction / 10);}
 
         updateStats();
 
-        ui.mainTextArea.setText("Administrative Officer:\nMy Lord, this week you made:\n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + loyaltyDif + " loyalty,\n" + player.powerProduction + " power.");
+        ui.mainTextArea.setText("Administrative Officer:\nMy Lord, this week you made:\n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + player.loyaltyProduction + " loyalty,\n" + player.powerProduction + " power.");
 
         ui.choice1.setText(">");
         ui.choice2.setText("");
@@ -261,9 +331,20 @@ public class Story {
     }
     public void sundayCheckout(){
         if (player.loyalty <= 0){
-            gameOverRes("Messenger:\nMy Lord, your subjects aren't loyal to you anymore and started an uprising against your oppressive tyranny!\n\nYOU WERE OVERTHROWN!");
+            ui.setImage("messege.png");
+            gameOverRes("Messenger:\nM'Lord, your subjects aren't loyal to you anymore and started an uprising against your oppressive tyranny!\n\nYOU WERE OVERTHROWN!");
         }else{
             office();
+        }
+
+        if (player.day > toMonth(1)){
+            if(player.gold > 500){
+                player.gold = player.gold - 500;
+                office();
+            }else{
+                ui.setImage("messege.png");
+                gameOverRes("Messenger:\nM'Lord, You failed to deliver the king the royal tribute!\n\nYOU WERE ABDICATED!");
+            }
         }
     }
     public void day(){
@@ -318,7 +399,7 @@ public class Story {
         game.nextPosition4 = "";
     }
     public void prologue2(){
-        ui.mainTextArea.setText("Prologue 2");
+        ui.mainTextArea.setText("Administrative Officer:\nM'Lord, you only have one month left to pay the royal tribute of 500 G to the king!\nPlease hurry m'Lord!");
 
         ui.choice1.setText(">");
         ui.choice2.setText("");
@@ -447,15 +528,15 @@ public class Story {
 
         castleDefault();
 
-        ui.choice1.setText("Wait a day");
-        ui.choice2.setText("Wait a week");
-        ui.choice3.setText("Adjust Tax");
-        ui.choice4.setText("Laws");
+        ui.choice1.setText("Wait sometime");
+        ui.choice2.setText("Adjust Tax");
+        ui.choice3.setText("Adjust Law");
+        ui.choice4.setText("Game Files");
 
-        game.nextPosition1 = "day";
-        game.nextPosition2 = "week";
-        game.nextPosition3 = "tax";
-        game.nextPosition4 = "law";
+        game.nextPosition1 = "wait";
+        game.nextPosition2 = "tax";
+        game.nextPosition3 = "law";
+        game.nextPosition4 = "file";
     }
     public void warroom(){
         ui.mainTextArea.setText("You are in your Warroom.\nFrom here you can command your army.");
@@ -488,6 +569,45 @@ public class Story {
         game.nextPosition2 = "train";
         game.nextPosition3 = "loyalty";
         game.nextPosition4 = "bbudget";
+    }
+    public void file(){
+        ui.mainTextArea.setText("Save or Load Game.");
+
+        ui.choice1.setText("Save Game");
+        ui.choice2.setText("Load Game");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "save";
+        game.nextPosition2 = "load";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "office";
+    }
+    public void save(){
+        ui.mainTextArea.setText("Save Game Files.");
+
+        ui.choice1.setText("Save to Game1");
+        ui.choice2.setText("Save to Game2");
+        ui.choice3.setText("Save to Game3");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "save1";
+        game.nextPosition2 = "save2";
+        game.nextPosition3 = "save3";
+        game.nextPosition4 = "file";
+    }
+    public void load(){
+        ui.mainTextArea.setText("Load Game Files.");
+
+        ui.choice1.setText("Load Game1");
+        ui.choice2.setText("Load Game2");
+        ui.choice3.setText("Load Game3");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "load1";
+        game.nextPosition2 = "load2";
+        game.nextPosition3 = "load3";
+        game.nextPosition4 = "file";
     }
     public void recruit(){
         ui.mainTextArea.setText("You are in the Barracks.\nYou are discussing on the recruitment policy with your Chief Commander.\nThe Recruitment is influenced by the loyalty and the number of your subjects, it will cost gold too.\nRecruits per week: " + player.soldierProduction+ "\nRecruitment Status: " + player.recruitment);
@@ -556,7 +676,7 @@ public class Story {
         ui.choice4.setText("");
 
         game.nextPosition1 = "";
-        game.nextPosition2 = "";
+        game.nextPosition2 = "hiddenroom";
         game.nextPosition3 = "";
         game.nextPosition4 = "";
     }
@@ -574,7 +694,7 @@ public class Story {
         game.nextPosition4 = "basement";
     }
     public void defaultLawText(SuperLaw localLaw){
-        ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + localLaw.active + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement);
+        ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement);
     }public void law(){
         SuperLaw localLaw = laws[lawCount];
 
@@ -593,20 +713,32 @@ public class Story {
 
         SuperLaw localLaw = laws[lawCount];
 
-        if (!localLaw.active) {
+        if (!player.law[localLaw.id]) {
             if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.loyalty > laws[count].loyalty && player.power > laws[count].power) {
 
-                localLaw.active = true;
+                player.law[localLaw.id] = true;
                 defaultLawText(localLaw);
             }else {
-                ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + localLaw.active + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement + "\n\nRequirements not met!");
+                ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement + "\n\nRequirements not met!");
             }
         }else {
-            localLaw.active = false;
+            player.law[localLaw.id] = false;
             defaultLawText(localLaw);
         }
     }
+    public void sleep(){
+        ui.mainTextArea.setText("How long do you want to wait?");
 
+        ui.choice1.setText("Wait for a Day");
+        ui.choice2.setText("Wait for a Week");
+        ui.choice3.setText("");
+        ui.choice4.setText("Back");
+
+        game.nextPosition1 = "day";
+        game.nextPosition2 = "week";
+        game.nextPosition3 = "";
+        game.nextPosition4 = "office";
+    }
     public void tax(){
         int goldDif = player.goldProduction - player.goldConsumption;
         ui.mainTextArea.setText("The Tax in your land is set on " + player.tax + ",\nwith " + player.ppl  +" subjects in your lands you make " + player.goldProduction + ".\nAfter " + player.goldConsumption + " gold consumption, your true gold balance is at: " + goldDif);

@@ -6,10 +6,10 @@ import java.awt.*;
 public class UI {
 
     JFrame window;
-    JPanel titleNamePanel, startButtonPanel, mainTextPanel, mainImgPanel, castleButtonPanel, choiceButtonPanel, playerPanel;
+    JPanel titleNamePanel, startButtonPanel, loadButtonPanel, mainTextPanel, mainImgPanel, castleButtonPanel, choiceButtonPanel, playerPanel;
     JLabel titleNameLabel, mainImgLabel;
     JLabel dayLabel, goldLabel, taxLabel, foodLabel, woodLabel, pplLabel, soldierLabel, tierLabel, loyaltyLabel, powerLabel;
-    JButton startButton;
+    JButton startButton, loadButton;
     public JButton choice1;
     public JButton choice2;
     public JButton choice3;
@@ -33,6 +33,7 @@ public class UI {
         window.getContentPane().setBackground(Color.BLACK);
         window.setLayout(null);
         window.setVisible(true);
+        window.setIconImage(new ImageIcon(getClass().getClassLoader().getResource("icon.png")).getImage());
 
         // TITLE SCREEN
         titleNamePanel = new JPanel();
@@ -58,8 +59,23 @@ public class UI {
         startButton.setActionCommand("start");
         startButtonPanel.add(startButton);
 
+        // LOAD BUTTON
+        loadButtonPanel = new JPanel();
+        loadButtonPanel.setBounds(500,500,200,100);
+        loadButtonPanel.setBackground(Color.BLACK);
+        loadButton = new JButton("LOAD");
+        loadButton.setBounds(20,20,140,30);
+        loadButton.setBackground(Color.BLACK);
+        loadButton.setForeground(Color.WHITE);
+        loadButton.setFont(textFont);
+        loadButton.setFocusPainted(false);
+        loadButton.addActionListener(cHandler);
+        loadButton.setActionCommand("loadFile");
+        loadButtonPanel.add(loadButton);
+
         window.add(titleNamePanel);
         window.add(startButtonPanel);
+        window.add(loadButtonPanel);
 
         // window.setVisible(true);
 
