@@ -274,9 +274,6 @@ public class Story {
     }
 
     public void sunday(){
-
-
-
         int profArmy = 0;
         if(player.law[professionalArmy.id]){profArmy = player.soldier / 100 * 20;}
 
@@ -295,12 +292,10 @@ public class Story {
         player.pplConsumption = player.soldierProduction;
 
         int goldDif = player.goldProduction - (player.goldConsumption + profArmy);
-        // System.out.println("Tax: "+ player.tax +" goldProduction: "+ player.goldProduction +" GoldConsumption: "+ player.goldConsumption +" GoldDif: "+ goldDif);
         int foodDif = player.foodProduction - player.foodConsumption;
         int woodDif = player.woodProduction - player.woodConsumption;
         int pplDif = player.pplProduction - player.pplConsumption;
         player.loyaltyProduction = - (player.tax +(player.soldierProduction / 2));
-        // System.out.println("Tax: "+ player.tax +" Tax minus: "+ (player.tax * -1) +" Loyalty: "+ player.loyalty +" LoyaltyDif: "+ loyaltyDif);
 
         player.ppl = player.ppl + pplDif;
 
@@ -311,27 +306,17 @@ public class Story {
         player.loyalty = player.loyalty + player.loyaltyProduction;
         player.power = player.power + player.powerProduction;
 
-        // System.out.println(player.loyalty);
-
         if(player.law[cityHall.id]){player.gold = player.gold + (player.goldProduction / 10);}
 
         updateStats();
 
-        ui.mainTextArea.setText("Administrative Officer:\nMy Lord, this week you made:\n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + player.loyaltyProduction + " loyalty,\n" + player.powerProduction + " power.");
+        ui.mainTextArea.setText("Administrative Officer:\nM'Lord, this week you made:\n" + goldDif + " gold,\n" + foodDif +" food,\n" + woodDif + " wood,\n" + pplDif + " citizens,\n" + player.soldierProduction + " soldiers,\n" + player.loyaltyProduction + " loyalty,\n" + player.powerProduction + " power.");
 
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "sundaycheckout";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice(">", "sundaycheckout", "", "", "", "", "", "");
     }
     public void sundayCheckout(){
         if (player.loyalty <= 0){
-            ui.setImage("messege.png");
+            ui.setImage("message.png");
             gameOverRes("Messenger:\nM'Lord, your subjects aren't loyal to you anymore and started an uprising against your oppressive tyranny!\n\nYOU WERE OVERTHROWN!");
         }else{
             office();
@@ -342,7 +327,7 @@ public class Story {
                 player.gold = player.gold - 500;
                 office();
             }else{
-                ui.setImage("messege.png");
+                ui.setImage("message.png");
                 gameOverRes("Messenger:\nM'Lord, You failed to deliver the king the royal tribute!\n\nYOU WERE ABDICATED!");
             }
         }
@@ -350,7 +335,7 @@ public class Story {
     public void day(){
         player.day = player.day + 1;
 
-        ui.dayLabel.setText("Days:"+ player.day);
+        updateStats();
         ui.mainTextArea.setText("You slept.");
 
         if (player.day % 7 == 0){
@@ -372,15 +357,7 @@ public class Story {
 
         ui.mainTextArea.setText(res);
 
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "gameover";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice(">", "gameover", "", "", "", "", "", "");
     }
 
     public void prologue1(){
@@ -388,28 +365,12 @@ public class Story {
 
         ui.setImage(Img.title);
 
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "prologue2";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice(">", "prologue2", "", "", "", "", "", "");
     }
     public void prologue2(){
         ui.mainTextArea.setText("Administrative Officer:\nM'Lord, you only have one month left to pay the royal tribute of 500 G to the king!\nPlease hurry m'Lord!");
 
-        ui.choice1.setText(">");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "prologue3";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice(">", "prologue3", "", "", "", "", "", "");
     }
 
     public void battle(SuperEnemy enemy){
@@ -423,30 +384,14 @@ public class Story {
 
         ui.castleButtonPanel.setVisible(false);
 
-        ui.choice1.setText("Attack");
-        ui.choice2.setText("Retreat");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "attack";
-        game.nextPosition2 = "retreat";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice("Attack", "attack", "Retreat", "retreat" + "", "", "", "", "");
     }
     public void attack(){
         ui.mainTextArea.setText("You are in the siege camp. \nYou have " + player.soldier + " tier " + player.tier + " soldiers. \nThe enemy " + ename + " has " + esoldier + " tier " + etier + " soldiers.");
 
         ui.castleButtonPanel.setVisible(false);
 
-        ui.choice1.setText("Attack");
-        ui.choice2.setText("Retreat");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "attack";
-        game.nextPosition2 = "retreat";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice("Attack", "attack", "Retreat", "retreat", "", "", "", "");
 
         int[] battleRes =  battle.neoCalcBattle(player.soldier, player.tier, esoldier, etier);
 
@@ -473,15 +418,7 @@ public class Story {
     public void nextBattle(){
         ui.castleButtonPanel.setVisible(false);
 
-        ui.choice1.setText("Attack");
-        ui.choice2.setText("Retreat");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "attack";
-        game.nextPosition2 = "retreat";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice("Attack", "attack", "Retreat",  "retreat", "", "", "", "");
     }
     public void win(){
         player.gold = player.gold + eloot;
@@ -493,15 +430,7 @@ public class Story {
 
         ui.castleButtonPanel.setVisible(false);
 
-        ui.choice1.setText("Go back to office.");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "office";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice("Go back to office.", "office", "", "", "", "", "", "");
 
         updateStats();
     }
@@ -510,15 +439,7 @@ public class Story {
 
         ui.castleButtonPanel.setVisible(false);
 
-        ui.choice1.setText("Go back to office.");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "office";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice("Go back to office.", "office", "", "", "", "", "", "");
 
         updateStats();
     }
@@ -528,15 +449,7 @@ public class Story {
 
         castleDefault();
 
-        ui.choice1.setText("Wait sometime");
-        ui.choice2.setText("Adjust Tax");
-        ui.choice3.setText("Adjust Law");
-        ui.choice4.setText("Game Files");
-
-        game.nextPosition1 = "wait";
-        game.nextPosition2 = "tax";
-        game.nextPosition3 = "law";
-        game.nextPosition4 = "file";
+        game.choice("Wait sometime", "wait", "Adjust Tax", "tax", "Adjust Law", "law", "Game Files", "file");
     }
     public void warroom(){
         ui.mainTextArea.setText("You are in your Warroom.\nFrom here you can command your army.");
@@ -544,83 +457,35 @@ public class Story {
 
         castleDefault();
 
-        ui.choice1.setText("Nearby Village");
-        ui.choice2.setText("Nearby Town");
-        ui.choice3.setText("Nearby Castle");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "village";
-        game.nextPosition2 = "town";
-        game.nextPosition3 = "castle";
-        game.nextPosition4 = "";
+        game.choice("Nearby Village", "village", "Nearby Town", "town", "Nearby Castle", "castle", "", "");
     }
     public void barracks(){
-        ui.mainTextArea.setText("You are in the Brracks.\nFrom here you can train your soldiers or adjust their budget.");
+        ui.mainTextArea.setText("You are in the Barracks.\nFrom here you can train your soldiers or adjust their budget.");
         ui.setImage(Img.title);
 
         castleDefault();
 
-        ui.choice1.setText("Recruit Soldiers");
-        ui.choice2.setText("Train Soldiers");
-        ui.choice3.setText("Loyalty Boost");
-        ui.choice4.setText("Adjust Budget");
-
-        game.nextPosition1 = "recruit";
-        game.nextPosition2 = "train";
-        game.nextPosition3 = "loyalty";
-        game.nextPosition4 = "bbudget";
+        game.choice("Recruit Soldiers", "recruit", "Train Soldiers", "train", "Loyalty Boost", "loyalty", "Adjust Budget", "bbudget");
     }
     public void file(){
         ui.mainTextArea.setText("Save or Load Game.");
 
-        ui.choice1.setText("Save Game");
-        ui.choice2.setText("Load Game");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "save";
-        game.nextPosition2 = "load";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "office";
+        game.choice("Save Game", "save", "Load Game", "load", "", "", "Back", "office");
     }
     public void save(){
         ui.mainTextArea.setText("Save Game Files.");
 
-        ui.choice1.setText("Save to Game1");
-        ui.choice2.setText("Save to Game2");
-        ui.choice3.setText("Save to Game3");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "save1";
-        game.nextPosition2 = "save2";
-        game.nextPosition3 = "save3";
-        game.nextPosition4 = "file";
+        game.choice("Save to Game1", "save1", "Save to Game2", "save2", "Save to Game3", "save3", "Back", "file");
     }
     public void load(){
         ui.mainTextArea.setText("Load Game Files.");
 
-        ui.choice1.setText("Load Game1");
-        ui.choice2.setText("Load Game2");
-        ui.choice3.setText("Load Game3");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "load1";
-        game.nextPosition2 = "load2";
-        game.nextPosition3 = "load3";
-        game.nextPosition4 = "file";
+        game.choice("Load Game1", "load1", "Load Game2", "load2", "Load Game3", "load3", "Back", "file");
     }
     public void recruit(){
         ui.mainTextArea.setText("You are in the Barracks.\nYou are discussing on the recruitment policy with your Chief Commander.\nThe Recruitment is influenced by the loyalty and the number of your subjects, it will cost gold too.\nRecruits per week: " + player.soldierProduction+ "\nRecruitment Status: " + player.recruitment);
 
-        ui.choice1.setText("Start Recruitment");
-        ui.choice2.setText("Stop Recruitment");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "startrecruit";
-        game.nextPosition2 = "stoprecruit";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "barracks";
+        game.choice("Start Recruitment", "startrecruit", "Stop Recruitment", "stoprecruit", "", "", "Back", "barracks");
     }
     public void startRecruit(){
 
@@ -633,16 +498,7 @@ public class Story {
             ui.mainTextArea.setText("You are already recruiting soldiers.");
         }
 
-        ui.choice1.setText("Start Recruitment");
-        ui.choice2.setText("Stop Recruitment");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "startrecruit";
-        game.nextPosition2 = "train";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "barracks";
-
+        game.choice("Start Recruitment", "startrecruit", "Stop Recruitment", "stoprecruit", "", "", "Back", "barracks");
     }
     public void stopRecruit(){
 
@@ -654,130 +510,83 @@ public class Story {
             ui.mainTextArea.setText("You aren't recruiting right now..");
         }
 
-        ui.choice1.setText("Start Recruitment");
-        ui.choice2.setText("Stop Recruitment");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
+        game.choice("Start Recruitment", "startrecruit", "Stop Recruitment", "stoprecruit", "", "", "Back", "barracks");
+    }
+    public void loyalty(){
+        ui.mainTextArea.setText("You are in the barracks of your soldiers.");
 
-        game.nextPosition1 = "startrecruit";
-        game.nextPosition2 = "stoprecruit";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "barracks";
+        game.choice("Give a Speech", "speech", "Give a Bonus", "bonus", "Entertainment", "entertainment", "Back", "barracks");
+    }
+    public void speech(){
+        ui.mainTextArea.setText("You are in the barracks of your soldiers.\nSpend ");
 
+        game.choice("", "", "", "", "", "", "Back", "loyalty");
     }
     public void basement(){
         ui.mainTextArea.setText("You are alone in the basement of your castle.");
 
         castleDefault();
 
-        ui.choice1.setText("Prison");
-        ui.choice2.setText("Hidden Room");
-        ui.choice3.setText("");
-        ui.choice4.setText("");
-
-        game.nextPosition1 = "";
-        game.nextPosition2 = "hiddenroom";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "";
+        game.choice("Prison", "", "Hidden Room", "hiddenroom", "", "", "", "");
     }
     public void hiddenRoom(){
         ui.mainTextArea.setText("You are in your hidden room.\nHere you can do hidden rituals...");
 
-        ui.choice1.setText("Blood Magic");
-        ui.choice2.setText("Blood Rituals");
-        ui.choice3.setText("Blood Summoning");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "bmagic";
-        game.nextPosition2 = "brituals";
-        game.nextPosition3 = "bsummoning";
-        game.nextPosition4 = "basement";
+        game.choice("Blood Magic", "bmagic", "Blood Rituals", "brituals", "Blood Summoning", "bsummoning", "Back", "basement");
     }
     public void defaultLawText(SuperLaw localLaw){
-        ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement);
+        ui.mainTextArea.setText("Adjusting Laws costs: 50 Gold and 25 Loyalty.\nLaw: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement);
     }public void law(){
         SuperLaw localLaw = laws[lawCount];
 
         defaultLawText(localLaw);
 
-        ui.choice1.setText("->");
-        ui.choice2.setText("<-");
-        ui.choice3.setText("Activate Law");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "nextavaiblelaw";
-        game.nextPosition2 = "lastavaiblelaw";
-        game.nextPosition3 = "switchlaw";
-        game.nextPosition4 = "office";
+        game.choice("->", "nextavaiblelaw", "<-", "lastavaiblelaw", "Activate Law", "switchlaw", "Back", "office");
     }public void switchLaw(int count) {
 
         SuperLaw localLaw = laws[lawCount];
 
         if (!player.law[localLaw.id]) {
-            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.loyalty > laws[count].loyalty && player.power > laws[count].power) {
-
+            if (player.gold > laws[count].gold && player.ppl > laws[count].ppl && player.soldier > laws[count].soldier && player.tier > laws[count].tier && player.loyalty > laws[count].loyalty && player.power > laws[count].power && player.gold > 50 && player.loyalty > 25) {
+                player.gold = player.gold - 50;
+                player.loyalty = player.loyalty - 25;
                 player.law[localLaw.id] = true;
                 defaultLawText(localLaw);
             }else {
-                ui.mainTextArea.setText("Law: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement + "\n\nRequirements not met!");
+                ui.mainTextArea.setText("Adjusting Laws costs: 50 Gold and 25 Loyalty.\nLaw: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement + "\n\nRequirements not met!");
             }
         }else {
-            player.law[localLaw.id] = false;
-            defaultLawText(localLaw);
+            if(player.gold > 50 && player.loyalty > 25){
+                player.gold = player.gold - 50;
+                player.loyalty = player.loyalty - 25;
+                player.law[localLaw.id] = false;
+                defaultLawText(localLaw);
+            }else {
+                ui.mainTextArea.setText("Adjusting Laws costs: 50 Gold and 25 Loyalty.\nLaw: " + localLaw.name + "\nState: " + player.law[localLaw.id] + "\nDescription: " + localLaw.description + "\nRequirements: " + localLaw.requirement + "\n\nRequirements not met!");
+            }
         }
+        updateStats();
     }
     public void sleep(){
         ui.mainTextArea.setText("How long do you want to wait?");
 
-        ui.choice1.setText("Wait for a Day");
-        ui.choice2.setText("Wait for a Week");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "day";
-        game.nextPosition2 = "week";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "office";
+        game.choice("Wait for a Day", "day", "Wait for a Week", "week", "", "", "Back", "office");
     }
     public void tax(){
         int goldDif = player.goldProduction - player.goldConsumption;
         ui.mainTextArea.setText("The Tax in your land is set on " + player.tax + ",\nwith " + player.ppl  +" subjects in your lands you make " + player.goldProduction + ".\nAfter " + player.goldConsumption + " gold consumption, your true gold balance is at: " + goldDif);
 
-        ui.choice1.setText("Raise Tax");
-        ui.choice2.setText("Decrease Tax");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "raise";
-        game.nextPosition2 = "decrease";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "office";
+        game.choice("Raise Tax", "raise", "Decrease Tax", "decrease", "", "", "Back", "office");
     }
     public void taxRaise(){
         ui.mainTextArea.setText("Tax " + player.tax + "\nRaising Tax can gain you gold but with high tax you lose loyalty and power.");
 
-        ui.choice1.setText("Raise by 1");
-        ui.choice2.setText("Raise by 5");
-        ui.choice3.setText("Raise by 10");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "raise1";
-        game.nextPosition2 = "raise5";
-        game.nextPosition3 = "raise10";
-        game.nextPosition4 = "office";
+        game.choice("Raise by 1", "raise1", "Raise by 5", "raise5", "Raise10", "raise10", "Back", "office");
     }
     public void taxDecrease(){
         ui.mainTextArea.setText("Tax " + player.tax + "\nDecreasing Tax helps gaining loyalty and power.");
 
-        ui.choice1.setText("Decrease by 1");
-        ui.choice2.setText("Decrease by 5");
-        ui.choice3.setText("Decrease by 10");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "decrease1";
-        game.nextPosition2 = "decrease5";
-        game.nextPosition3 = "decrease10";
-        game.nextPosition4 = "office";
+        game.choice("Decrease by 1", "decrease1", "Decrease by 5", "decrease5", "Decrease by 10", "decrease10", "Back", "office");
     }
     public void raise(int rate){
 

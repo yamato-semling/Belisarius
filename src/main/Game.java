@@ -65,7 +65,6 @@ public class Game {
                     +e.getClass() + ": " + e.getMessage() + "\n");
         }
     }
-
     public void loadFirst(){
         ui.mainTextArea.setText("Load Game Files.");
 
@@ -116,5 +115,18 @@ public class Game {
                 case "ca4": story.basement(); break;
             }
         }
+    }
+
+    public void choice(String c1, String pos1, String c2, String pos2, String c3, String pos3, String c4, String pos4){
+
+        ui.choice1.setText(c1);
+        ui.choice2.setText(c2);
+        ui.choice3.setText(c3);
+        ui.choice4.setText(c4);
+
+        nextPosition1 = pos1;
+        nextPosition2 = pos2;
+        nextPosition3 = pos3;
+        nextPosition4 = pos4;
     }
 }

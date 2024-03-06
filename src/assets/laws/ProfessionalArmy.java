@@ -12,7 +12,7 @@ public class ProfessionalArmy extends SuperLaw{
         ppl = 0;
         soldier = 0;
         tier = 0;
-        loyalty = 0;
+        loyalty = 150;
         power = 0;
 
     }

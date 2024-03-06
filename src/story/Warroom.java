@@ -20,45 +20,17 @@ public class Warroom {
     public static void village(){
         ui.mainTextArea.setText("You gathered your army.\nYour army is camping near the village.");
 
-        ui.choice1.setText("Conquer Village");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "vbattle";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "warroom";
+        game.choice("Conquer Village", "vbattle", "", "", "", "", "Back", "warroom");
     }
     public static void town(){
         ui.mainTextArea.setText("You gathered your army.\nYour army is camping near the town.");
 
-        ui.choice1.setText("Conquer Town");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "tbattle";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "warroom";
-
+        game.choice("Conquer Town", "tbattle", "", "", "", "", "Back", "warroom");
     }
 
     public static void castle(){
         ui.mainTextArea.setText("You gathered your army.\nYour army is camping near the castle.");
 
-        ui.choice1.setText("Conquer Castle");
-        ui.choice2.setText("");
-        ui.choice3.setText("");
-        ui.choice4.setText("Back");
-
-        game.nextPosition1 = "cbattle";
-        game.nextPosition2 = "";
-        game.nextPosition3 = "";
-        game.nextPosition4 = "warroom";
-
+        game.choice("Conquer Castle", "cbattle", "", "", "", "", "Back", "warroom");
     }
-
-
 }
